@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antibiotic & Milk Interaction Checker</title>
+    <!-- Tailwind CSS for clean, modern styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, -apple-system, sans-serif; background-color:aqua;  }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 border border-slate-100">
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h1 class="text-xl font-bold text-slate-800">Antibiotic & Milk Checker</h1>
+            <p class="text-sm text-slate-500 mt-1">Select your medication to see if it safely mixes with dairy.</p>
+        </div>
+
+        <!-- Selector -->
+        <div class="mb-6">
+            <label for="antibiotic-select" class="block text-sm font-semibold text-slate-700 mb-2">Choose an Antibiotic:</label>
+            <select id="antibiotic-select" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <option value="" disabled selected>-- Select from common options --</option>
+                <!-- Interacts -->
+                <option value="doxycycline">Doxycycline (Tetracycline)</option>
+                <option value="ciprofloxacin">Ciprofloxacin (Fluoroquinolone)</option>
+                <option value="levofloxacin">Levofloxacin (Fluoroquinolone)</option>
+                <option value="minocycline">Minocycline (Tetracycline)</option>
+                <!-- Safe -->
+                <option value="amoxicillin">Amoxicillin (Penicillin)</option>
+                <option value="azithromycin">Azithromycin (Macrolide)</option>
+                <option value="cephalexin">Cephalexin (Cephalosporin)</option>
+                <option value="erythromycin">Erythromycin (Macrolide)</option>
+            </select>
+        </div>
+
+        <!-- Result Card Area -->
+        <div id="result-card" class="hidden rounded-xl p-5 border transition-all duration-300">
+            <div class="flex items-center gap-3 mb-3">
+                <span id="status-icon" class="text-2xl"></span>
+                <h2 id="status-title" class="font-bold text-lg"></h2>
+            </div>
+            <p id="status-desc" class="text-sm leading-relaxed mb-4"></p>
+            <div id="timing-box" class="bg-white/60 rounded-lg p-3 border text-xs font-medium text-slate-700 hidden">
+                <strong class="block text-slate-900 mb-1">⏱️ Recommended Timing:</strong>
+                Take your dose <span class="underline">1 hour before</span> or <span class="underline">2 hours after</span> consuming milk, yogurt, cheese, or antacids.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const data = {
+            // Interacts
+            doxycycline: { safe: false, name: "Doxycycline", type: "Tetracycline class. Calcium tightly binds to this drug in your stomach, preventing your body from absorbing it properly." },
+            ciprofloxacin: { safe: false, name: "Ciprofloxacin", type: "Fluoroquinolone class. Dairy significantly lowers the amount of medicine that reaches your bloodstream." },
+            levofloxacin: { safe: false, name: "Levofloxacin", type: "Fluoroquinolone class. Binds easily with dietary minerals like calcium, magnesium, and iron." },
+            minocycline: { safe: false, name: "Minocycline", type: "Tetracycline class. Food or dairy can decrease its absorption rate by up to 30% or more." },
+            // Safe
+            amoxicillin: { safe: true, name: "Amoxicillin", type: "Penicillin class. This medication's chemical structure is stable against calcium and can be taken with or without milk." },
+            azithromycin: { safe: true, name: "Azithromycin", type: "Macrolide class. Safe to take with dairy, though taking it with a small meal can actually help prevent stomach upset." },
+            cephalexin: { safe: true, name: "Cephalexin", type: "Cephalosporin class. Calcium does not interfere with how your gut absorbs this medicine." },
+            erythromycin: { safe: true, name: "Erythromycin", type: "Macrolide class. Dairy does not cause malabsorption, but always check your specific prescription label as forms vary." }
+        };
+
+        const select = document.getElementById('antibiotic-select');
+        const card = document.getElementById('result-card');
+        const icon = document.getElementById('status-icon');
+        const title = document.getElementById('status-title');
+        const desc = document.getElementById('status-desc');
+        const timing = document.getElementById('timing-box');
+
+        select.addEventListener('change', (e) => {
+            const drug = data[e.target.value];
+            if (!drug) return;
+
+            card.classList.remove('hidden');
+            desc.textContent = drug.type;
+
+            if (drug.safe) {
+                // UI changes for safe drugs
+                card.className = "rounded-xl p-5 border bg-emerald-50 border-emerald-200 text-emerald-900";
+                icon.textContent = "✅";
+                title.textContent = `${drug.name} is Safe with Dairy`;
+                timing.classList.add('hidden');
+            } else {
+                // UI changes for interacting drugs
+                card.className = "rounded-xl p-5 border bg-rose-50 border-rose-200 text-rose-900";
+                icon.textContent = "⚠️";
+                title.textContent = `Do NOT Mix ${drug.name} with Milk`;
+                timing.className = "bg-white/80 rounded-lg p-3 border border-rose-200 text-xs font-medium text-rose-900 mt-2 block";
+            }
+        });
+    </script>
+</body>
+</html>
